@@ -21,6 +21,6 @@ public class HelloWorld {
                 email = "My e-mail address"
         )
         public static String helloWorld(PluginContext context, GlobalAlgebraGraph g) {
-                return "666";
+                return "Płaszczka";
         }
 }
