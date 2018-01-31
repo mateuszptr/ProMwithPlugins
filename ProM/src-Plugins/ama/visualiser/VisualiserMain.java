@@ -34,10 +34,7 @@ public class VisualiserMain {
 			@PluginVariant(requiredParameterLabels = { 0 })
   public static JComponent visualize(PluginContext context, GlobalAlgebraGraph data) {
 		
-		JComponent endComponent = new JPanel2();
-		
-		//endComponent.pain
-		
+		JPanel2 endComponent = new JPanel2();		
 		
 		for(LogModel model : data.models ) {
 			Box mainBox = new Box(BoxLayout.Y_AXIS);
@@ -52,31 +49,35 @@ public class VisualiserMain {
 				if(node.getType() == AlgebraNode.Type.START) startNode = node;
 			}
 			
-			AlgebraNode end = visualiseNode(actualGraph, mainBox, startNode, null);
+			AlgebraNode end = visualiseNode(endComponent, actualGraph, mainBox, null, startNode, null);
 			endComponent.add(mainBox);
 		}
 		
-		JScrollPane scroll = new JScrollPane(endComponent);
-		return scroll;
+		//endComponent.repaint();
 		
-		//return endComponent;		
+		//JFrame frame = new JFrame();
+		//frame.add(endComponent);
+		//frame.pack();
+		//endComponent.repaint();
+		
+		//return endComponent;
+		
+		JScrollPane scroll = new JScrollPane(endComponent);
+		return scroll;		
   }
 	
 	
 	
-	private static AlgebraNode visualiseNode(MutableGraph<AlgebraNode> actualGraph, JComponent container, AlgebraNode actualNode, AlgebraNode.Type endNodeType) {
+	private static AlgebraNode visualiseNode(JPanel2 endComponent, MutableGraph<AlgebraNode> actualGraph, JComponent container, JLabel precedingNodeLabel, AlgebraNode actualNode, AlgebraNode.Type endNodeType) {
 		while (actualNode.getType() != endNodeType) {
 			JLabel label = new JLabel(""+actualNode);
 			label.setAlignmentX(Component.CENTER_ALIGNMENT);
-			
-			//label.setBorder(BorderFactory.createLineBorder(Color.black));
-			Border compound = BorderFactory.createCompoundBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5), BorderFactory.createLineBorder(Color.BLACK)), BorderFactory.createEmptyBorder(5, 5, 5, 5));
+			Border compound = BorderFactory.createCompoundBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15), BorderFactory.createLineBorder(Color.BLACK)), BorderFactory.createEmptyBorder(5, 5, 5, 5));
 			label.setBorder(compound);
-			
-			
+
 			container.add(label);
-			//container.add(Box.createRigidArea(new Dimension(0,5)));
 			
+			if (precedingNodeLabel != null) endComponent.addLine2(new LabelLine(precedingNodeLabel, label));
 			
 			int size = actualGraph.successors(actualNode).size();
 			if(size == 0) {
@@ -84,6 +85,7 @@ public class VisualiserMain {
 			}
 			else if(size == 1) {
 				actualNode = actualGraph.successors(actualNode).iterator().next();
+				precedingNodeLabel = label;
 			}
 			else {
 //				Box horizontalBox = new Box(BoxLayout.X_AXIS);
@@ -103,8 +105,10 @@ public class VisualiserMain {
 					switch(actualNode.getType()) {
 						case ALT_START: type = AlgebraNode.Type.ALT_END; break;
 						case PLL_START: type = AlgebraNode.Type.PLL_END; break;
+						default:;
 					}
-					nextNode = visualiseNode(actualGraph, verticalBox, node, type);
+					nextNode = visualiseNode(endComponent, actualGraph, verticalBox, label, node, type);
+					//dodanie lini??
 					horizontalBox.add(verticalBox);
 				}
 				actualNode = nextNode;
