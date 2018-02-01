@@ -41,8 +41,6 @@ public class VisualiserMain {
 		for(LogModel model : data.models ) {
 			Box mainBox = new Box(BoxLayout.Y_AXIS);
 			mainBox.setBorder(BorderFactory.createLineBorder(Color.blue));
-			//mainBox.setAlignmentX(0.5f);
-			//mainBox.setAlignmentY(0.5f);
 			
 			MutableGraph<AlgebraNode> actualGraph = model.getAg().getGraph();
 			
@@ -54,15 +52,6 @@ public class VisualiserMain {
 			NodeObject end = visualiseNode(endComponent, actualGraph, mainBox, null, startNode, null);
 			endComponent.add(mainBox);
 		}
-		
-		//endComponent.repaint();
-		
-		//JFrame frame = new JFrame();
-		//frame.add(endComponent);
-		//frame.pack();
-		//endComponent.repaint();
-		
-		//return endComponent;
 		
 		JScrollPane scroll = new JScrollPane(endComponent);
 		return scroll;		
@@ -76,12 +65,6 @@ public class VisualiserMain {
 		while (actualNode.getType() != endNodeType) {
 			JLabel actualNodeLabel = makeLabel(actualNode);
 			container.add(actualNodeLabel);
-			
-			if(actualNode.getSendingTo().size() > 0) {
-				//System.out.println("================================================================");
-				//System.out.println(actualNode.getSendingTo().size());
-				
-			}
 			
 			if (connecting != null && !connecting.isEmpty()) {
 				for(JLabel labelFrom : connecting) {
@@ -103,14 +86,12 @@ public class VisualiserMain {
 			}
 			else {
 				JPanel horizontalBox = new JPanel();
-				//horizontalBox.setBorder(BorderFactory.createLineBorder(Color.red));
 				
 				AlgebraNode nextNode = null;
 				connecting = new ArrayList<JLabel>();
 				
 				for(AlgebraNode node : actualGraph.successors(actualNode)) {
 					Box verticalBox = new Box(BoxLayout.Y_AXIS);
-					//verticalBox.setBorder(BorderFactory.createLineBorder(Color.red));
 					AlgebraNode.Type type = null;
 					switch(actualNode.getType()) {
 						case ALT_START: type = AlgebraNode.Type.ALT_END; break;
@@ -122,8 +103,6 @@ public class VisualiserMain {
 					nextNode = received.getNode();
 					connecting.add(received.getLabel());
 					
-					//endComponent.addLine2(new LabelLine());
-					//dodanie lini??
 					horizontalBox.add(verticalBox);
 				}
 				actualNode = nextNode;
