@@ -56,8 +56,6 @@ public class VisualiserMain {
 		
 		matcher.match();
 		endComponent.setServiceLines(matcher.getServiceLines());
-		//System.out.println(matcher.getServiceLines().size());
-//		Container c = endComponent.getContentPane();
 
 		JScrollPane scroll = new JScrollPane(endComponent);
 		return scroll;		
@@ -154,10 +152,7 @@ public class VisualiserMain {
 			default:
 				borderColor = Color.BLACK;
 		}
-		
-		//if(node.getType() == AlgebraNode.Type.SIMPLE && EventType.fromString(node.getEvent().getType()) == EventType.SEND) borderColor = Color.MAGENTA;
-		//if(node.getType() == AlgebraNode.Type.SIMPLE && EventType.fromString(node.getEvent().getType()) == EventType.RECV) borderColor = Color.YELLOW;
-		
+				
 		Border border = BorderFactory.createCompoundBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(VisualiserConfig.margin, VisualiserConfig.margin, VisualiserConfig.margin, VisualiserConfig.margin), BorderFactory.createLineBorder(borderColor)), BorderFactory.createEmptyBorder(VisualiserConfig.padding, VisualiserConfig.padding, VisualiserConfig.padding, VisualiserConfig.padding));
 		label.setBorder(border);		
 		return label;

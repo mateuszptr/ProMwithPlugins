@@ -25,11 +25,7 @@ public class JPanel2 extends JPanel {
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-		
-		// 1/2 zoom-u
-//		Graphics2D g2 = (Graphics2D)g;
-//		g2.scale(2, 2);
-		
+				
 		for(LabelLine line : lines) {						
 			Point pointStart = SwingUtilities.convertPoint(line.getLabelStart().getParent(), line.getLabelStart().getX(), line.getLabelStart().getY(), this);
 			Point pointEnd = SwingUtilities.convertPoint(line.getLabelEnd().getParent(), line.getLabelEnd().getX(), line.getLabelEnd().getY(), this);
@@ -102,23 +98,5 @@ public class JPanel2 extends JPanel {
 			g.setColor(Color.BLUE);
 			g.fillPolygon(triangle);
 		}
-//		BufferedImage im = new BufferedImage(this.getWidth(), this.getHeight(), BufferedImage.TYPE_INT_ARGB);
-//		this.paint(im.getGraphics());
-//		try {
-//			ImageIO.write(im, "PNG", new File("shot.png"));
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
-		
-//		BufferedImage image = new BufferedImage(getWidth(),getHeight(), BufferedImage.TYPE_INT_RGB);
-//		Graphics2D g2 = image.createGraphics();
-//		paint(g2);
-//		try{
-//			ImageIO.write(image, "type", new File("xxx.jpg"));
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
 	}
 }
