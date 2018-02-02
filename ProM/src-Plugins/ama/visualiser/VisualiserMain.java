@@ -22,11 +22,11 @@ import org.processmining.framework.plugin.annotations.PluginVariant;
 import com.google.common.graph.MutableGraph;
 
 import put.algebraminer.event.AlgebraNode;
+import put.algebraminer.event.EventType;
 import put.algebraminer.event.GlobalAlgebraGraph;
 import put.algebraminer.event.LogModel;
 
 public class VisualiserMain {
-	
 	@Plugin(name = "Alpha Miner Visualiser",
 			parameterLabels = { "GlobalAlgebraGraph" },
 			returnLabels = { "Alpha Miner Process Visualisation" },
@@ -37,6 +37,7 @@ public class VisualiserMain {
   public static JComponent visualize(PluginContext context, GlobalAlgebraGraph data) {
 		
 		JPanel2 endComponent = new JPanel2();		
+		Matcher matcher = new Matcher();
 		
 		for(LogModel model : data.models ) {
 			Box mainBox = new Box(BoxLayout.Y_AXIS);
@@ -49,30 +50,55 @@ public class VisualiserMain {
 				if(node.getType() == AlgebraNode.Type.START) startNode = node;
 			}
 			
-			NodeObject end = visualiseNode(endComponent, actualGraph, mainBox, null, startNode, null);
+			NodeObject end = visualiseNode(matcher, endComponent, actualGraph, mainBox, null, startNode, null);
 			endComponent.add(mainBox);
 		}
 		
+		matcher.match();
+		endComponent.setServiceLines(matcher.getServiceLines());
+		//System.out.println(matcher.getServiceLines().size());
+//		Container c = endComponent.getContentPane();
+
 		JScrollPane scroll = new JScrollPane(endComponent);
 		return scroll;		
   }
 	
 	
 	
-	private static NodeObject visualiseNode(JPanel2 endComponent, MutableGraph<AlgebraNode> actualGraph, JComponent container, JLabel precedingNodeLabel, AlgebraNode actualNode, AlgebraNode.Type endNodeType) {
+	private static NodeObject visualiseNode(Matcher matcher, JPanel2 endComponent, MutableGraph<AlgebraNode> actualGraph, JComponent container, JLabel precedingNodeLabel, AlgebraNode actualNode, AlgebraNode.Type endNodeType) {
 		List<JLabel> connecting = null;
 		
 		while (actualNode.getType() != endNodeType) {
 			JLabel actualNodeLabel = makeLabel(actualNode);
 			container.add(actualNodeLabel);
 			
+			if(actualNode.getType() == AlgebraNode.Type.SIMPLE) {
+				if(EventType.fromString(actualNode.getEvent().getType()) == EventType.SEND) {
+					matcher.addSend(new NodeObject(actualNodeLabel, actualNode));
+				}
+				if(EventType.fromString(actualNode.getEvent().getType()) == EventType.RECV) {
+					matcher.addRecv(new NodeObject(actualNodeLabel, actualNode));
+				}
+			}
+			
+			///prinshit begin
+			if(actualNode.getType() == AlgebraNode.Type.SIMPLE) {
+				if(EventType.fromString(actualNode.getEvent().getType()) == EventType.SEND || EventType.fromString(actualNode.getEvent().getType()) == EventType.RECV) {
+					System.out.println(EventType.fromString(actualNode.getEvent().getType())+" lpid: "+actualNode.getEvent().getLpid()+",\trpid: "+actualNode.getEvent().getRpid()+",\tsending:" + actualNode.getSendingTo().size());
+					for(AlgebraNode x : actualNode.getSendingTo()) {
+						System.out.println("\t\t"+EventType.fromString(x.getEvent().getType())+" lpid: "+x.getEvent().getLpid()+",\trpid: "+x.getEvent().getRpid());
+					}
+				}
+			}
+			//end
+			
 			if (connecting != null && !connecting.isEmpty()) {
 				for(JLabel labelFrom : connecting) {
-					endComponent.addLine2(new LabelLine(labelFrom, actualNodeLabel));
+					endComponent.addLine(new LabelLine(labelFrom, actualNodeLabel));
 				}
 				connecting = null;
 			}
-			else if (precedingNodeLabel != null) endComponent.addLine2(new LabelLine(precedingNodeLabel, actualNodeLabel));
+			else if (precedingNodeLabel != null) endComponent.addLine(new LabelLine(precedingNodeLabel, actualNodeLabel));
 			
 			int size = actualGraph.successors(actualNode).size();
 			if(size == 0) {
@@ -99,7 +125,7 @@ public class VisualiserMain {
 						default:;
 					}
 					
-					NodeObject received =  visualiseNode(endComponent, actualGraph, verticalBox, actualNodeLabel, node, type);
+					NodeObject received =  visualiseNode(matcher, endComponent, actualGraph, verticalBox, actualNodeLabel, node, type);
 					nextNode = received.getNode();
 					connecting.add(received.getLabel());
 					
@@ -128,6 +154,9 @@ public class VisualiserMain {
 			default:
 				borderColor = Color.BLACK;
 		}
+		
+		//if(node.getType() == AlgebraNode.Type.SIMPLE && EventType.fromString(node.getEvent().getType()) == EventType.SEND) borderColor = Color.MAGENTA;
+		//if(node.getType() == AlgebraNode.Type.SIMPLE && EventType.fromString(node.getEvent().getType()) == EventType.RECV) borderColor = Color.YELLOW;
 		
 		Border border = BorderFactory.createCompoundBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(VisualiserConfig.margin, VisualiserConfig.margin, VisualiserConfig.margin, VisualiserConfig.margin), BorderFactory.createLineBorder(borderColor)), BorderFactory.createEmptyBorder(VisualiserConfig.padding, VisualiserConfig.padding, VisualiserConfig.padding, VisualiserConfig.padding));
 		label.setBorder(border);		
