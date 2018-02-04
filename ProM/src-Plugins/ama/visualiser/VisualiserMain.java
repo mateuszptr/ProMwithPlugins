@@ -58,7 +58,7 @@ public class VisualiserMain {
 		endComponent.setServiceLines(matcher.getServiceLines());
 
 		JScrollPane scroll = new JScrollPane(endComponent);
-		return scroll;		
+		return scroll;			
   }
 	
 	
@@ -79,15 +79,15 @@ public class VisualiserMain {
 				}
 			}
 			
-			///prinshit begin
-			if(actualNode.getType() == AlgebraNode.Type.SIMPLE) {
-				if(EventType.fromString(actualNode.getEvent().getType()) == EventType.SEND || EventType.fromString(actualNode.getEvent().getType()) == EventType.RECV) {
-					System.out.println(EventType.fromString(actualNode.getEvent().getType())+" lpid: "+actualNode.getEvent().getLpid()+",\trpid: "+actualNode.getEvent().getRpid()+",\tsending:" + actualNode.getSendingTo().size());
-					for(AlgebraNode x : actualNode.getSendingTo()) {
-						System.out.println("\t\t"+EventType.fromString(x.getEvent().getType())+" lpid: "+x.getEvent().getLpid()+",\trpid: "+x.getEvent().getRpid());
-					}
-				}
-			}
+			///printtest begin
+//			if(actualNode.getType() == AlgebraNode.Type.SIMPLE) {
+//				if(EventType.fromString(actualNode.getEvent().getType()) == EventType.SEND || EventType.fromString(actualNode.getEvent().getType()) == EventType.RECV) {
+//					System.out.println(EventType.fromString(actualNode.getEvent().getType())+" lpid: "+actualNode.getEvent().getLpid()+",\trpid: "+actualNode.getEvent().getRpid()+",\tsending:" + actualNode.getSendingTo().size());
+//					for(AlgebraNode x : actualNode.getSendingTo()) {
+//						System.out.println("\t\t"+EventType.fromString(x.getEvent().getType())+" lpid: "+x.getEvent().getLpid()+",\trpid: "+x.getEvent().getRpid());
+//					}
+//				}
+//			}
 			//end
 			
 			if (connecting != null && !connecting.isEmpty()) {
