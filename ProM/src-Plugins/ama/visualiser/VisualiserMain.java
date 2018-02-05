@@ -57,8 +57,7 @@ public class VisualiserMain {
 		for(LogModel model : data.models ) {			
 			Box mainBox = new Box(BoxLayout.Y_AXIS);
 			mainBox.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(VisualiserConfig.margin,VisualiserConfig.margin,VisualiserConfig.margin,VisualiserConfig.margin), BorderFactory.createLineBorder(Color.LIGHT_GRAY)));
-			
-			
+						
 			MutableGraph<AlgebraNode> actualGraph = model.getAg().getGraph();
 			
 			AlgebraNode startNode = null;
@@ -104,13 +103,15 @@ public class VisualiserMain {
         //System.out.println(endComponent.getSize());
         //endComponent.repaint();
         
-        makePanelImage(endComponent);
+        BufferedImage screenImage = makePanelImage(endComponent);
+        
+        
 		
 		return scroll;			
   }
 	
 	
-	 private static void makePanelImage(Component panel)
+	 private static BufferedImage makePanelImage(Component panel)
 	    {
 	        Dimension size = panel.getSize();
 	        BufferedImage image = new BufferedImage(
@@ -127,6 +128,7 @@ public class VisualiserMain {
 	        {
 	            e.printStackTrace();
 	        }
+	        return image;
 	    }
 	
 	
