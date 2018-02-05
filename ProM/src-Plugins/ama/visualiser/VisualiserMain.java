@@ -2,13 +2,19 @@ package ama.visualiser;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -39,9 +45,19 @@ public class VisualiserMain {
 		JPanel2 endComponent = new JPanel2();		
 		Matcher matcher = new Matcher();
 		
-		for(LogModel model : data.models ) {
+		Double tableColumns = Math.ceil(Math.sqrt(data.models.size()));
+		int counter = 0, index = 0;
+		System.out.println(tableColumns.intValue());
+		Box[] tableBoxes = new Box[tableColumns.intValue()];
+				
+		for(int i  = 0; i < tableBoxes.length; i++) {
+			tableBoxes[i] = new Box(BoxLayout.Y_AXIS);
+		}
+		
+		for(LogModel model : data.models ) {			
 			Box mainBox = new Box(BoxLayout.Y_AXIS);
-			mainBox.setBorder(BorderFactory.createLineBorder(Color.blue));
+			mainBox.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEmptyBorder(VisualiserConfig.margin,VisualiserConfig.margin,VisualiserConfig.margin,VisualiserConfig.margin), BorderFactory.createLineBorder(Color.LIGHT_GRAY)));
+			
 			
 			MutableGraph<AlgebraNode> actualGraph = model.getAg().getGraph();
 			
@@ -51,15 +67,67 @@ public class VisualiserMain {
 			}
 			
 			NodeObject end = visualiseNode(matcher, endComponent, actualGraph, mainBox, null, startNode, null);
-			endComponent.add(mainBox);
+			
+			tableBoxes[index].add(mainBox);
+			index++;
+			if(index == tableColumns.intValue()) {
+				counter++;
+				index = 0;
+			
+			}
+		}
+			//endComponent.add(mainBox);
+		
+		
+		
+		for(Box tmpBox : tableBoxes) {
+			endComponent.add(tmpBox);
 		}
 		
 		matcher.match();
 		endComponent.setServiceLines(matcher.getServiceLines());
 
+		endComponent.setMinimumSize(new Dimension(endComponent.getWidth(), endComponent.getHeight()));
+		
 		JScrollPane scroll = new JScrollPane(endComponent);
+		
+		JFrame frame = new JFrame("Snapshot Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        
+        frame.setContentPane(scroll);
+        frame.pack();
+        //frame.setPreferredSize(new Dimension(endComponent.getWidth(), endComponent.getHeight()));
+        //frame.setSize(new Dimension(100000,100000));
+        //frame.setLocationByPlatform(true);
+        //frame.setVisible(true);
+        //System.out.println(endComponent.getSize());
+        //endComponent.repaint();
+        
+        makePanelImage(endComponent);
+		
 		return scroll;			
   }
+	
+	
+	 private static void makePanelImage(Component panel)
+	    {
+	        Dimension size = panel.getSize();
+	        BufferedImage image = new BufferedImage(
+	                    size.width, size.height 
+	                              , BufferedImage.TYPE_INT_RGB);
+	        Graphics2D g2 = (Graphics2D)image.getGraphics();
+	        panel.paint(g2);
+	        try
+	        {
+	            ImageIO.write(image, "png", new File("snapshot.png"));
+	            System.out.println("Panel saved as Image.");
+	        }
+	        catch(Exception e)
+	        {
+	            e.printStackTrace();
+	        }
+	    }
 	
 	
 	
