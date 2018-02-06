@@ -75,9 +75,6 @@ public class VisualiserMain {
 			
 			}
 		}
-			//endComponent.add(mainBox);
-		
-		
 		
 		for(Box tmpBox : tableBoxes) {
 			endComponent.add(tmpBox);
@@ -92,24 +89,13 @@ public class VisualiserMain {
 		
 		JFrame frame = new JFrame("Snapshot Example");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         
         frame.setContentPane(scroll);
-        frame.pack();
-        //frame.setPreferredSize(new Dimension(endComponent.getWidth(), endComponent.getHeight()));
-        //frame.setSize(new Dimension(100000,100000));
-        //frame.setLocationByPlatform(true);
-        //frame.setVisible(true);
-        //System.out.println(endComponent.getSize());
-        //endComponent.repaint();
-        
+        frame.pack();        
         BufferedImage screenImage = makePanelImage(endComponent);
-        
-        
-		
+        		
 		return scroll;			
   }
-	
 	
 	 private static BufferedImage makePanelImage(Component panel)
 	    {
@@ -130,9 +116,7 @@ public class VisualiserMain {
 	        }
 	        return image;
 	    }
-	
-	
-	
+	 
 	private static NodeObject visualiseNode(Matcher matcher, JPanel2 endComponent, MutableGraph<AlgebraNode> actualGraph, JComponent container, JLabel precedingNodeLabel, AlgebraNode actualNode, AlgebraNode.Type endNodeType) {
 		List<JLabel> connecting = null;
 		
@@ -148,18 +132,7 @@ public class VisualiserMain {
 					matcher.addRecv(new NodeObject(actualNodeLabel, actualNode));
 				}
 			}
-			
-			///printtest begin
-//			if(actualNode.getType() == AlgebraNode.Type.SIMPLE) {
-//				if(EventType.fromString(actualNode.getEvent().getType()) == EventType.SEND || EventType.fromString(actualNode.getEvent().getType()) == EventType.RECV) {
-//					System.out.println(EventType.fromString(actualNode.getEvent().getType())+" lpid: "+actualNode.getEvent().getLpid()+",\trpid: "+actualNode.getEvent().getRpid()+",\tsending:" + actualNode.getSendingTo().size());
-//					for(AlgebraNode x : actualNode.getSendingTo()) {
-//						System.out.println("\t\t"+EventType.fromString(x.getEvent().getType())+" lpid: "+x.getEvent().getLpid()+",\trpid: "+x.getEvent().getRpid());
-//					}
-//				}
-//			}
-			//end
-			
+						
 			if (connecting != null && !connecting.isEmpty()) {
 				for(JLabel labelFrom : connecting) {
 					endComponent.addLine(new LabelLine(labelFrom, actualNodeLabel));
@@ -207,7 +180,10 @@ public class VisualiserMain {
 	}
 	
 	private static JLabel makeLabel(AlgebraNode node) {
-		JLabel label = new JLabel(node.toString());
+		String text = node.toString();
+		text = text.substring(0, text.lastIndexOf('@'));
+		text += node.getEvent() == null? "" : (node.getEvent().getResource() == null ? "" : "@" + node.getEvent().getResource());
+		JLabel label = new JLabel(text);
 		label.setAlignmentX(Component.CENTER_ALIGNMENT);
 		Color borderColor;
 		switch(node.getType()) {

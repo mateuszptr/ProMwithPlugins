@@ -47,14 +47,6 @@ public class Matcher {
 				lines.add(new LabelLine(nodeSend.getLabel(), bestNode.getLabel()));
 				recvNodes.remove(bestNode);
 			}
-			
-//			for(NodeObject nodeRecv : recvNodes) {
-//				if(nodeSend.getNode().getEvent().getLpid().equals(nodeRecv.getNode().getEvent().getRpid()) && nodeSend.getNode().getEvent().getRpid().equals(nodeRecv.getNode().getEvent().getLpid())) {
-//					lines.add(new LabelLine(nodeSend.getLabel(), nodeRecv.getLabel()));
-//					recvNodes.remove(nodeRecv);
-//					break;
-//				}
-//			}
 		}
 	}
 }
